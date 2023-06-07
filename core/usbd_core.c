@@ -165,30 +165,35 @@ static bool usbd_get_descriptor(uint16_t type_index, uint8_t **data, uint32_t *l
     uint8_t index = 0U;
     bool found = true;
     uint8_t str_len = 0;
+    uint8_t *p = NULL;
 
     type = HI_BYTE(type_index);
     index = LO_BYTE(type_index);
 
     switch (type) {
         case USB_DESCRIPTOR_TYPE_DEVICE:
-            *data = (uint8_t *)usbd_core_cfg.descriptors->device_descriptor;
+            p = (uint8_t *)usbd_core_cfg.descriptors->device_descriptor;
             *len = usbd_core_cfg.descriptors->device_descriptor[0];
+            memcpy(*data, p, *len);
             break;
         case USB_DESCRIPTOR_TYPE_CONFIGURATION:
             usbd_core_cfg.speed = usbd_get_port_speed(0);
             if (usbd_core_cfg.speed == USB_SPEED_HIGH) {
                 if (usbd_core_cfg.descriptors->hs_config_descriptor) {
-                    *data = (uint8_t *)usbd_core_cfg.descriptors->hs_config_descriptor;
+                    p = (uint8_t *)usbd_core_cfg.descriptors->hs_config_descriptor;
                     *len = (usbd_core_cfg.descriptors->hs_config_descriptor[CONF_DESC_wTotalLength] |
                             (usbd_core_cfg.descriptors->hs_config_descriptor[CONF_DESC_wTotalLength + 1] << 8));
+                    memcpy(*data, p, *len);
+
                 } else {
                     found = false;
                 }
             } else {
                 if (usbd_core_cfg.descriptors->fs_config_descriptor) {
-                    *data = (uint8_t *)usbd_core_cfg.descriptors->fs_config_descriptor;
+                    p = (uint8_t *)usbd_core_cfg.descriptors->fs_config_descriptor;
                     *len = (usbd_core_cfg.descriptors->fs_config_descriptor[CONF_DESC_wTotalLength] |
                             (usbd_core_cfg.descriptors->fs_config_descriptor[CONF_DESC_wTotalLength + 1] << 8));
+                    memcpy(*data, p, *len);
                 } else {
                     found = false;
                 }
@@ -205,8 +210,9 @@ static bool usbd_get_descriptor(uint16_t type_index, uint8_t **data, uint32_t *l
             } else if (index == USB_OSDESC_STRING_DESC_INDEX) {
                 if (usbd_core_cfg.descriptors->msosv1_descriptor) {
                     USB_LOG_INFO("read MS OS 1.0 descriptor string\r\n");
-                    *data = usbd_core_cfg.descriptors->msosv1_descriptor->string;
+                    p = usbd_core_cfg.descriptors->msosv1_descriptor->string;
                     *len = usbd_core_cfg.descriptors->msosv1_descriptor->string_len;
+                    memcpy(*data, p, *len);
                 } else {
                 }
             } else {
@@ -228,8 +234,9 @@ static bool usbd_get_descriptor(uint16_t type_index, uint8_t **data, uint32_t *l
             break;
         case USB_DESCRIPTOR_TYPE_DEVICE_QUALIFIER:
             if (usbd_core_cfg.descriptors->device_quality_descriptor) {
-                *data = (uint8_t *)usbd_core_cfg.descriptors->device_quality_descriptor;
+                p = (uint8_t *)usbd_core_cfg.descriptors->device_quality_descriptor;
                 *len = usbd_core_cfg.descriptors->device_quality_descriptor[0];
+                memcpy(*data, p, *len);
             } else {
                 found = false;
             }
@@ -238,17 +245,19 @@ static bool usbd_get_descriptor(uint16_t type_index, uint8_t **data, uint32_t *l
         case USB_DESCRIPTOR_TYPE_OTHER_SPEED:
             if (usbd_core_cfg.speed == USB_SPEED_HIGH) {
                 if (usbd_core_cfg.descriptors->fs_other_speed_descriptor) {
-                    *data = (uint8_t *)usbd_core_cfg.descriptors->fs_other_speed_descriptor;
+                    p = (uint8_t *)usbd_core_cfg.descriptors->fs_other_speed_descriptor;
                     *len = (usbd_core_cfg.descriptors->fs_other_speed_descriptor[CONF_DESC_wTotalLength] |
                             (usbd_core_cfg.descriptors->fs_other_speed_descriptor[CONF_DESC_wTotalLength] << 8));
+                    memcpy(*data, p, *len);
                 } else {
                     found = false;
                 }
             } else {
                 if (usbd_core_cfg.descriptors->hs_other_speed_descriptor) {
-                    *data = (uint8_t *)usbd_core_cfg.descriptors->hs_other_speed_descriptor;
+                    p = (uint8_t *)usbd_core_cfg.descriptors->hs_other_speed_descriptor;
                     *len = (usbd_core_cfg.descriptors->hs_other_speed_descriptor[CONF_DESC_wTotalLength] |
                             (usbd_core_cfg.descriptors->hs_other_speed_descriptor[CONF_DESC_wTotalLength] << 8));
+                    memcpy(*data, p, *len);
                 } else {
                     found = false;
                 }
