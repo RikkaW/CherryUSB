@@ -92,7 +92,7 @@ int usbd_initialize(void);
 int usbd_deinitialize(void);
 
 void usbd_event_handler(uint8_t event);
-
+void usbd_process_guess_host_os(uint8_t type, uint8_t index, uint16_t wLength);
 #ifdef __cplusplus
 }
 #endif

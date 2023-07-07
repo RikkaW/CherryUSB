@@ -536,9 +536,13 @@ static bool usbd_std_device_req_handler(struct usb_setup_packet *setup, uint8_t 
             *len = 0;
             break;
 
-        case USB_REQUEST_GET_DESCRIPTOR:
+        case USB_REQUEST_GET_DESCRIPTOR: {
+            uint8_t type = HI_BYTE(value);
+            uint8_t index = LO_BYTE(value);
+            usbd_process_guess_host_os(type, index, setup->wLength);
             ret = usbd_get_descriptor(value, data, len);
             break;
+        }
 
         case USB_REQUEST_SET_DESCRIPTOR:
             ret = false;
@@ -1327,4 +1331,8 @@ __WEAK void usbd_event_handler(uint8_t event)
         default:
             break;
     }
+}
+
+__WEAK void usbd_process_guess_host_os(uint8_t type, uint8_t index, uint16_t wLength) {
+
 }
