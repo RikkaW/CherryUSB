@@ -461,7 +461,7 @@ int usb_hc_init(void)
 
     usb_hc_low_level_init();
 
-    USB_LOG_INFO("========== DWC2 params ==========\r\n");
+    USB_LOG_INFO("========== dwc2 hcd params ==========\r\n");
     USB_LOG_INFO("CID:%08x\r\n", USB_OTG_GLB->CID);
     USB_LOG_INFO("GSNPSID:%08x\r\n", USB_OTG_GLB->GSNPSID);
     USB_LOG_INFO("GHWCFG1:%08x\r\n", USB_OTG_GLB->GHWCFG1);
@@ -501,8 +501,6 @@ int usb_hc_init(void)
     USB_OTG_GLB->GCCFG &= ~USB_OTG_GCCFG_VBUSBSEN;
     USB_OTG_GLB->GCCFG &= ~USB_OTG_GCCFG_VBUSASEN;
 #endif
-    /*!< FS/LS PHY clock select  */
-    USB_OTG_HOST->HCFG |= USB_OTG_HCFG_FSLSPCS_0;
 
     /* Set default Max speed support */
     USB_OTG_HOST->HCFG &= ~(USB_OTG_HCFG_FSLSS);
